@@ -1,6 +1,11 @@
 ---
-data_name: data.csv
+#data_name: data.csv
+data_name: Ind_rename.dta
+#data_copied: raw_dataframe
 
+variables_used:
+ - syear
+ -
 columns_to_drop:
   - nationality
   - ethnicity
@@ -21,3 +26,23 @@ column_rename_mapping:
 
 outcome: smoke
 outcome_numerical: smoke_numerical  # created during the clean_data step
+
+
+data_name : final_df.dta
+
+outcome_var :  std_trust_var
+covariates :
+-  Treat
+-  Age
+-  female
+-  rural
+-  East
+-  low_performing
+-  highest_educ_hh
+-  migration_backgrnd
+-  work_father
+-  work_mother
+-  reli_hh
+-  single_parent
+clustering_var:
+-  State

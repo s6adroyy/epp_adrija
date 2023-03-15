@@ -1,9 +1,10 @@
 """Functions for fitting the regression model."""
-
+import pandas as pd
 import statsmodels.formula.api as smf
-from statsmodels.iolib.smpickle import load_pickle
 
+from epp_adrija.utilities import read_yaml
 
+'''
 def fit_logit_model(data, data_info, model_type):
     """Fit a logit model to data.
 
@@ -52,3 +53,57 @@ def load_model(path):
 
     """
     return load_pickle(path)
+'''
+
+# def run_dd_regression(data, treatment_var, data_info, outcome_var, covariates, clustering_var):
+def run_dd_regression(data, outcome_var, covariates):
+    """Runs a difference-in-differences regression on the given data using the specified variables and clustering variable.
+
+    Parameters:
+        data (pandas.DataFrame): The data to use for the regression analysis.
+        treatment_var (str): The name of the treatment variable.
+        outcome_var (str): The name of the outcome variable.
+        covariates (list): A list of covariate variable names to include in the regression.
+        clustering_var (str): The name of the variable to use for clustering standard errors.
+
+    Returns:
+        statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
+
+    """
+    # Create the formula for the regression
+    formula = f"{outcome_var} ~  {'+'.join(covariates)} + C(year_hgsch_entry)"
+
+    # Run the regression using statsmodels
+    reg = smf.ols(formula=formula, data=data).fit(
+        cov_type="cluster",
+        cov_kwds={"groups": data["State"]},
+    )
+
+    return reg
+
+
+# Return the regression results
+data_info = read_yaml(
+    r"C:\Users\LENOVO\epp_adrija\src\epp_adrija\data_management\data_info.yaml",
+)
+data = pd.read_stata(
+    r"C:\Users\LENOVO\epp_adrija\bld\python\data\final_df.dta",
+    convert_categoricals=False,
+)
+abc = run_dd_regression(
+    data,
+    outcome_var="std_trust_var",
+    covariates=[
+        "Treat",
+        "Age",
+        "female",
+        "rural",
+        "East",
+        "low_performing",
+        "highest_educ_hh",
+        "migration_backgrnd",
+        "work_father",
+        "work_mother",
+        "reli_hh",
+    ],
+)

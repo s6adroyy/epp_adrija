@@ -1,47 +1,60 @@
 """Tasks running the core analyses."""
 
+
 import pandas as pd
 import pytask
 
-from epp_adrija.analysis.model import fit_logit_model, load_model
-from epp_adrija.analysis.predict import predict_prob_by_age
-from epp_adrija.config import BLD, GROUPS, SRC
-from epp_adrija.utilities import read_yaml
+from epp_adrija.analysis.model import run_dd_regression
+from epp_adrija.config import BLD, SRC
 
 
+# @pytask.mark.depends_on(
+# },
 @pytask.mark.depends_on(
     {
-        "scripts": ["model.py", "predict.py"],
-        "data": BLD / "python" / "data" / "data_clean.csv",
+        "scripts": ["model.py"],
+        "data": BLD / "python" / "data" / "final_df.dta",
         "data_info": SRC / "data_management" / "data_info.yaml",
     },
 )
-@pytask.mark.produces(BLD / "python" / "models" / "model.pickle")
-def task_fit_model_python(depends_on, produces):
-    """Fit a logistic regression model (Python version)."""
-    data_info = read_yaml(depends_on["data_info"])
-    data = pd.read_csv(depends_on["data"])
-    model = fit_logit_model(data, data_info, model_type="linear")
-    model.save(produces)
-
-
-for group in GROUPS:
-
-    kwargs = {
-        "group": group,
-        "produces": BLD / "python" / "predictions" / f"{group}.csv",
-    }
-
-    @pytask.mark.depends_on(
-        {
-            "data": BLD / "python" / "data" / "data_clean.csv",
-            "model": BLD / "python" / "models" / "model.pickle",
-        },
+@pytask.mark.wip7
+@pytask.mark.produces(BLD / "python" / "models" / "reg_model_gym.csv")
+def task_run_dd_regression(depends_on, produces):
+    """Fit a two way fixed effect regression model (Python version)."""
+    data = pd.read_stata(depends_on["data"])
+    reg_model_gym = run_dd_regression(
+        data,
+        outcome_var="std_trust_var",
+        covariates=[
+            "Treat",
+            "Age",
+            "female",
+            "rural",
+            "East",
+            "low_performing",
+            "highest_educ_hh",
+            "migration_backgrnd",
+            "work_father",
+            "work_mother",
+            "reli_hh",
+        ],
     )
-    @pytask.mark.task(id=group, kwargs=kwargs)
-    def task_predict_python(depends_on, group, produces):
-        """Predict based on the model estimates (Python version)."""
-        model = load_model(depends_on["model"])
-        data = pd.read_csv(depends_on["data"])
-        predicted_prob = predict_prob_by_age(data, model, group)
-        predicted_prob.to_csv(produces, index=False)
+    results_table = reg_model_gym.summary().tables[1]
+
+    # Convert table data to DataFrame
+    reg_results_df = pd.DataFrame(results_table.data[1:], columns=results_table.data[0])
+    reg_results_df.to_csv(produces)
+    # with open(produces[1], 'w') as f:
+    # with redirect_stdout(f):
+
+
+# @pytask.mark.produces(BLD / "python" / "models" / "model.pickle")
+# def task_fit_model_python(depends_on, produces):
+
+
+# for group in GROUPS:
+
+# @pytask.mark.depends_on(
+# },
+# @pytask.mark.task(id=group, kwargs=kwargs)
+# def task_predict_python(depends_on, group, produces):
