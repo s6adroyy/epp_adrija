@@ -18,6 +18,7 @@ for document in documents:
     )
     @pytask.mark.task(id=document)
     def task_compile_document():
+        pass
         """Compile the document specified in the latex decorator."""
 
     kwargs = {

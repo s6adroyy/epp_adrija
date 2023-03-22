@@ -1,8 +1,9 @@
 """Functions for fitting the regression model."""
 import pandas as pd
 import statsmodels.formula.api as smf
-
+import pickle
 from epp_adrija.utilities import read_yaml
+from statsmodels.iolib.smpickle import load_pickle
 
 '''
 def fit_logit_model(data, data_info, model_type):
@@ -41,6 +42,8 @@ def fit_logit_model(data, data_info, model_type):
 
     return smf.logit(formula, data=data).fit()
 
+'''
+
 
 def load_model(path):
     """Load statsmodels model.
@@ -53,7 +56,8 @@ def load_model(path):
 
     """
     return load_pickle(path)
-'''
+    # return load_model(path)
+
 
 # def run_dd_regression(data, treatment_var, data_info, outcome_var, covariates, clustering_var):
 def run_dd_regression(data, outcome_var, covariates):
@@ -70,6 +74,7 @@ def run_dd_regression(data, outcome_var, covariates):
         statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
 
     """
+    # data = data.dropna(subset=covariates)
     # Create the formula for the regression
     formula = f"{outcome_var} ~  {'+'.join(covariates)} + C(year_hgsch_entry)"
 
@@ -78,6 +83,36 @@ def run_dd_regression(data, outcome_var, covariates):
         cov_type="cluster",
         cov_kwds={"groups": data["State"]},
     )
+
+    return reg
+
+
+def mechanism_regression(data, outcome_vars, covariates):
+    """Runs a difference-in-differences regression on the given data using the specified variables and clustering variable.
+
+    Parameters:
+        data (pandas.DataFrame): The data to use for the regression analysis.
+        outcome_vars (list): A list of outcome variable names to include in the regression.
+        covariates (list): A list of covariate variable names to include in the regression.
+
+    Returns:
+        dict: A dictionary of regression results, with the outcome variable names as keys and the regression results as values.
+
+    """
+    data = data.dropna(subset=covariates)
+    # results = []
+    # for outcome_var in outcome_vars:
+    # Create the formula for the regression
+    formula = f"{outcome_vars} ~ {'+'.join(covariates)} + C(year_hgsch_entry)"
+
+    # Run the regression using statsmodels
+    reg = smf.ols(formula=formula, data=data).fit(
+        cov_type="cluster",
+        cov_kwds={"groups": data["State"]},
+    )
+
+    # results[outcome_var] = reg
+    # results.append(reg)
 
     return reg
 

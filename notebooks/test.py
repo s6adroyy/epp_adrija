@@ -537,10 +537,10 @@ def plot_event_study(formula, data):
             "label": np.arange(-8, 8),
         },
     )
-
+    print(leadslags_plot)
     leadslags_plot["lb"] = leadslags_plot["mean"] - leadslags_plot["sd"] * 1.96
     leadslags_plot["ub"] = leadslags_plot["mean"] + leadslags_plot["sd"] * 1.96
-
+    print(leadslags_plot)
     plot = (
         p.ggplot(leadslags_plot, p.aes(x="label", y="mean", ymin="lb", ymax="ub"))
         + p.geom_hline(yintercept=0.0769, color="red")
@@ -551,7 +551,9 @@ def plot_event_study(formula, data):
         + p.geom_hline(yintercept=0, linetype="dashed")
         + p.geom_vline(xintercept=0, linetype="dashed")
     )
-    plt.savefig("leadslags_plot.png")
+    # plot.savefig("leadslags_plot1.png")
+    # plot.show()
+    plot.save(filename="leadslags_plot3.jpg", dpi=1000)
     return plot.draw()
 
 
@@ -565,7 +567,10 @@ raw_dataframe.set_index("pid", inplace=True)
 processed_dataframe = process_data(raw_dataframe)
 # processed_dataframe.shape
 
+
 for school in ["gymnasium", "not_gymnasium"]:
+
+    print("THE SCHOOL VALUE IS" + school)
     half_done = filter_based_on_school(processed_dataframe, school)
     Treatment = create_treatment(half_done)
 
@@ -631,3 +636,6 @@ for school in ["gymnasium", "not_gymnasium"]:
 #     p.geom_hline(yintercept = 0,
 #     p.geom_vline(xintercept = 0,
 #              linetype = "dashed")
+formula = "std_trust_var ~ lead1 + lead2 + lead3 + lead4 + lead5 + lead6 + lead7 + lag0 + lag1 + lag2 + lag3 + lag4 + lag5 + lag6 + lag7+ C(year_hgsch_entry)"
+
+result_plot = plot_event_study(formula, Ind_Rename)

@@ -27,11 +27,16 @@ column_rename_mapping:
 outcome: smoke
 outcome_numerical: smoke_numerical  # created during the clean_data step
 
+data_copied: raw_dataframe.dta
+data_name_main_regression : final_df.dta
+data_name_mechanisms: mechanisms.dta
 
-data_name : final_df.dta
-
-outcome_var :  std_trust_var
-covariates :
+outcome_var_main_regression :  std_trust_var
+outome_var_mechanisms:
+- Volunteer_work
+- School_representative
+- mental_health
+covariates/categorical :
 -  Treat
 -  Age
 -  female
@@ -44,5 +49,27 @@ covariates :
 -  work_mother
 -  reli_hh
 -  single_parent
+Fixed Effect:
+- year_hgsch_entry (categorical)
 clustering_var:
 -  State
+States with codes:
+- Schleswig-Holstein = 1
+- Hamburg = 2
+- Niedersachsen = 3
+- Bremen = 4
+- Nordrhein-Westfalen = 5
+- Hesse = 6
+- Rhineland-Palatinate = 7
+- Baden-Wuerttemberg = 8
+- Bayern = 9
+- Saarland = 10
+- Berlin = 11
+- Brandenburg = 12
+- Mecklenburg-Vorpommern = 13
+- Sachsen-Anhalt = 15
+- Saxony = 14
+- Thuringia = 16
+
+Columns to drop for main regression dataframe :
+-

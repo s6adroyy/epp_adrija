@@ -13,7 +13,8 @@ def main():
     processed_data2 = clean_data1.filter_based_on_school(processed_data1)
     processed_data3 = clean_data1.create_treatment(processed_data2)
     processed_data4 = clean_data1.rename_variables(processed_data3)
-    clean_data1.rename_independent_var(processed_data4)
+    processed_data5 = clean_data1.rename_independent_var(processed_data4)
+    processed_data6 = clean_data1.event_study(processed_data5)
 
     # Analysis
 

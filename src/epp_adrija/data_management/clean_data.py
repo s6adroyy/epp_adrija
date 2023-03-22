@@ -260,6 +260,69 @@ def rename_independent_var(df2):
     return df2
 
 
+def mechanism(df3):
+    Nan_jl0072 = [-5.0, -8.0, -1.0]
+    df3 = df3.loc[~df3["jl0072"].isin(Nan_jl0072)]
+    df3 = df3.rename(columns={"jl0072": "volunteer_work"})
+    df3.loc[(df3["volunteer_work"] < 4), "volunteer_work"] = 1
+    df3.loc[
+        (df3["volunteer_work"] >= 4) & (df3["volunteer_work"] <= 5), "volunteer_work"
+    ] = 0
+
+    Nan_jl0218 = [-8.0, -1.0]
+    df3 = df3.loc[~df3["jl0218"].isin(Nan_jl0218)]
+    df3 = df3.rename(columns={"jl0218": "mental_health"})
+    df3.loc[(df3["mental_health"] < 4), "mental_health"] = 1
+    df3.loc[
+        (df3["mental_health"] >= 4) & (df3["mental_health"] <= 5), "mental_health"
+    ] = 0
+
+    df3 = df3.loc[~(df3["jl0140"] == -2)]
+    df3 = df3.rename(columns={"jl0140": "school_representative"})
+    df3.loc[(df3["school_representative"] == 1), "school_representative"] = 1
+
+    # Nan_jl0105_h = [-1.0]
+    df3 = df3.loc[~(df3["jl0105_h"] == -1.0)]
+    # df3 = df3.loc[~df3["jl0105_h"].isin(Nan_jl0105_h)]
+    df3 = df3.rename(columns={"jl0105_h": "sport_active"})
+    df3.loc[(df3["sport_active"] == 1), "sport_active"] = 1
+    df3.loc[(df3["sport_active"] == 2), "sport_active"] = 0
+
+    if "level_0" in df3.columns:
+        # # if it exists, remove it
+        df3 = df3.drop("level_0", axis=1)
+
+    return df3
+
+
+def event_study(df3):
+    df3["treat_year"] = df3.apply(lambda _: 0, axis=1)
+    treat_year_dict = {
+        2: 2002,
+        3: 2003,
+        4: 2004,
+        5: 2002,
+        8: 2004,
+        9: 2003,
+        10: 2001,
+        11: 2006,
+        12: 2006,
+        13: 2002,
+        15: 1999,
+    }
+    for states in treat_year_dict:
+        df3.loc[(df3["State"].isin([states])), "treat_year"] = treat_year_dict[states]
+    df3["t"] = df3["year_hgsch_entry"] - df3["treat_year"]
+    df3["lag0"] = df3["t"] == 0
+    for i in range(1, 8):
+        df3["lag" + str(i)] = df3["t"] == -i
+        df3["lead" + str(i)] = df3["t"] == i
+    if "level_0" in df3.columns:
+        # # if it exists, remove it
+        df3 = df3.drop("level_0", axis=1)
+    return df3
+
+
 '''
 def run_dd_regression(data, treatment_var, outcome_var, covariates, clustering_var):
     """Runs a difference-in-differences regression on the given data using the specified

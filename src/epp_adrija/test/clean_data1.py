@@ -265,59 +265,58 @@ def rename_independent_var(df2):
     return df2
 
 
-def run_dd_regression(data, treatment_var, outcome_var, covariates, clustering_var):
-    """Runs a difference-in-differences regression on the given data using the specified variables and clustering variable.
+# def run_dd_regression(data, treatment_var, outcome_var, covariates, clustering_var):
+#     """Runs a difference-in-differences regression on the given data using the specified variables and clustering variable.
 
-    Parameters:
-        data (pandas.DataFrame): The data to use for the regression analysis.
-        treatment_var (str): The name of the treatment variable.
-        outcome_var (str): The name of the outcome variable.
-        covariates (list): A list of covariate variable names to include in the regression.
-        clustering_var (str): The name of the variable to use for clustering standard errors.
+#     Parameters:
+#         data (pandas.DataFrame): The data to use for the regression analysis.
+#         treatment_var (str): The name of the treatment variable.
+#         outcome_var (str): The name of the outcome variable.
+#         covariates (list): A list of covariate variable names to include in the regression.
+#         clustering_var (str): The name of the variable to use for clustering standard errors.
 
-    Returns:
-        statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
+#     Returns:
+#         statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
 
-    """
-    # Create the formula for the regression
-    formula = f"{outcome_var} ~ {treatment_var} + {'+'.join(covariates)} + C(year_hgsch_entry)"
+#     """
+#     # Create the formula for the regression
+#     formula = f"{outcome_var} ~ {treatment_var} + {'+'.join(covariates)} + C(year_hgsch_entry)"
 
-    # Run the regression using statsmodels
-    smf.ols(formula=formula, data=data).fit(
-        cov_type="cluster",
-        cov_kwds={"groups": data[clustering_var]},
-    )
+#     # Run the regression using statsmodels
+#     smf.ols(formula=formula, data=data).fit(
+#         cov_type="cluster",
+#         cov_kwds={"groups": data[clustering_var]},
+#     )
 
-    # Return the regression results
+# Return the regression results
 
 
 def event_study(df3):
     df3["treat_year"] = df3.apply(lambda _: 0, axis=1)
     treat_year_dict = {
-        "[2] Hamburg": 2002,
-        "[3] Niedersachsen": 2003,
-        "[4] Bremen": 2004,
-        "[5] Nordrhein-Westfalen": 1,
-        "[8] Baden-Wuerttemberg": 2004,
-        "[9] Bayern": 2003,
-        "[10] Saarland": 2001,
-        "[11] Berlin": 2006,
-        "[12] Brandenburg": 2006,
-        "[13] Mecklenburg-Vorpommern": 2002,
-        "[15] Sachsen-Anhalt": 1999,
+        2: 2002,
+        3: 2003,
+        4: 2004,
+        5: 2002,
+        8: 2004,
+        9: 2003,
+        10: 2001,
+        11: 2006,
+        12: 2006,
+        13: 2002,
+        15: 1999,
     }
     for states in treat_year_dict:
         df3.loc[(df3["State"].isin([states])), "treat_year"] = treat_year_dict[states]
-    return df3
-
-
-def lead_lag(df4):
-    df4["t"] = df4["year_hgsch_entry"] - df4["treat_year"]
-    df4["lag0"] = df4["t"] == 0
+    df3["t"] = df3["year_hgsch_entry"] - df3["treat_year"]
+    df3["lag0"] = df3["t"] == 0
     for i in range(1, 8):
-        df4["lag" + str(i)] = df4["t"] == -i
-        df4["lead" + str(i)] = df4["t"] == i
-    return df4
+        df3["lag" + str(i)] = df3["t"] == -i
+        df3["lead" + str(i)] = df3["t"] == i
+    if "level_0" in df3.columns:
+        # # if it exists, remove it
+        df3 = df3.drop("level_0", axis=1)
+    return df3
 
 
 def plot_event_study(formula, data):

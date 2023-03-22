@@ -11,6 +11,8 @@ from epp_adrija.data_management.clean_data import (
     process_data,
     rename_independent_var,
     rename_variables,
+    mechanism,
+    event_study,
 )
 
 
@@ -71,6 +73,32 @@ def task_process_data(depends_on, produces):
 def task_process_data_csv(depends_on, produces):
     output_df = pd.read_stata(depends_on["dataframe2"])
     output_df.to_csv(produces)
+
+
+@pytask.mark.depends_on(
+    {
+        "dataframe3": BLD / "python" / "data" / "final_df.dta",
+    },
+)
+@pytask.mark.wip8
+@pytask.mark.produces(BLD / "python" / "data" / "eventstudy.dta")
+def task_event_study(depends_on, produces):
+    input_df = pd.read_stata(depends_on["dataframe3"])
+    eventstudy = event_study(input_df)
+    eventstudy.to_stata(produces)
+
+
+@pytask.mark.depends_on(
+    {
+        "dataframe4": BLD / "python" / "data" / "final_df.dta",
+    },
+)
+@pytask.mark.wip12
+@pytask.mark.produces(BLD / "python" / "data" / "mechanisms.dta")
+def task_meachanisms(depends_on, produces):
+    input_df4 = pd.read_stata(depends_on["dataframe4"])
+    mechanisms = mechanism(input_df4)
+    mechanisms.to_stata(produces)
 
 
 # @pytask.mark.depends_on(
