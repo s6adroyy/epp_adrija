@@ -16,6 +16,10 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{subcaption}
 \usepackage{minibox}
+%\usepackage{natbib}
+%\usepackage{bookmark}
+%\usepackage{natbib}
+%\usepackage{biblatex}
 % \usepackage{pdf14} % Enable for Manuscriptcentral -- can't handle pdf 1.5
 % \usepackage{endfloat} % Enable to move tables / figures to the end. Useful for some
 % submissions.
@@ -47,14 +51,36 @@
     runcolor=black,
     urlcolor=NavyBlue
 }
-
-
+% \usepackage[
+%     authordate,autocite=inline,backend=biber,sorting=nyt,natbib=true]{biblatex}
 \widowpenalty=10000
 \clubpenalty=10000
 
 \setlength{\parskip}{1ex}
 \setlength{\parindent}{0ex}
 \setstretch{1.5}
+
+
+
+% \usepackage[unicode=true]{hyperref}
+% \hypersetup{
+%     colorlinks=true,
+%     linkcolor=black,
+%     anchorcolor=black,
+%     citecolor=NavyBlue,
+%     filecolor=black,
+%     menucolor=black,
+%     runcolor=black,
+%     urlcolor=NavyBlue
+% }
+
+
+% \widowpenalty=10000
+% \clubpenalty=10000
+
+% \setlength{\parskip}{1ex}
+% \setlength{\parindent}{0ex}
+% \setstretch{1.5}
 
 
 \begin{document}
@@ -64,69 +90,218 @@
 \author{Adrija Roy}
 
 \date{
-    {\bf Preliminary -- please do not quote}
-    \\[1ex]
+    %{\bf Preliminary -- please do not quote}
+    %\\[1ex]
     \today
 }
 
 \maketitle
 
-
 \begin{abstract}
-    Some abstract here.
+    For this project I examine the the effect of a major German high school implemented 
+    between 2001 and 2008 in most of the federal States on student's trust attitude. The 
+    reform reduced the secondory education by one year from 9 to 8 which lead to the increase
+    in the weekly instruction hours. Since the policy G8 reform was implemented in diffrent 
+    time over the period of 7 years I use difference in difference approach with time as 
+    year of high school entry and State as fixed effects. I get a significant reult on 
+    students' trust attitude. I also tried to look into some of the potential mechanisms 
+    in line with other existing literatures.  
+    
 \end{abstract}
 
 \clearpage
 
 
-\section{Introduction} % (fold)
-\label{sec:introduction}
+\section{Introduction\label{sec:introduction}}
+A growing body of emperical literature has emphasized trust plays important role 
+in economic development and direct efect on total factor productivity.\autocite{knack1997does}.
+At the individual level, there is evidence linking trust and subjective well-being.\citep{helliwell2010trust}. 
+Education plays a crucial role in shaping children's trust behavior in a positive way,\citep{glaeser2007does}.  
+Raising instruction time in high school is often considered with having several positive effects for students'
+outcomes,  especially regarding improvements in cognitive skills and performance.\citep{huebener2017increased}  
+and eventually making schooling more efficient.  Even though many countries are attracted by the idea of 
+reaping the benefits of increased instruction time in school \citep{oecd2016},outcomes other than student performance 
+might be affected as well.\citep{dahmann2014impact,dahmann2018cross,hofmann2018learning}.\par
+Here aim is to analyse whether higher instruction hours affected students' self rated trust, 
+measured as trust in people and strangers.The remainder of the paper is structured as follows. 
+In Section\ref{sec:literature} we provide a broad literature overview on different outcomes affected 
+by schooling and also review existing literature on the German G8-reform whereas 
+Section\ref{sec:reform} briefly summarizes the main characteristics and features of the 
+very reform. Afterwards, Section\ref{sec:data} introduces the data set we use and
+Section\ref{sec:strategy} gives reasoning on our empirical strategy.
 
-If you are using this template, please cite this item from the references:
-\citet{GaudeckerEconProjectTemplates}.
+\section{Related literature\label{sec:literature}}
+On the determinants of trust,\citep{alesina2002trusts}argue that individual experiences like 
+traumatic events or (historically rooted) discrimination as well as one's community environment are 
+among the strongest factors reducing trust.Accordingly \citep{glaeser1999social}find less trustworthy
+behavior between people from different races or nationalities what has also been shown by 
+\citep{Borgonovi2012} in a cross-European country comparison. \citep{dohmen2008representative} 
+using 2003 and 2005 waves of the SOEPdata set, that female people, elderly as well as tall ones 
+are usually associated with exhibiting more trust. On the other hand, trust seems to be strongly 
+connected to personality traits as shown by \citep{dohmen2008representative} and 
+\citep{becker2012relationship}. The former authors examine the effect of psychological traits as 
+measured by the ``Big Five''concept and argue that more conscientious or more neurotic people 
+trust less whereas individuals who are more agreeable or more open to experiences tend to trust more.
+\par Moreover, there exists some evidence that schooling might affect social preferences 
+including trust as well as altruism and reciprocity. Focusing on the effect of schooling on an 
+individual's trust formation, current literature usually indicates that schooling and education 
+in general have a positive impact on individual trust attitudes (see for example\citep{oreopoulos2011priceless}).
 
-The data set for the example project is taken from
-\url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}.
-It contains data on smoking habits in the UK, with 1691 observations and 12 variables.
-We consider only 4 of the 12 features for the prediction of the variable
-\texttt{smoking}: \texttt{marital\_status}, \texttt{highest\_qualification},
-\texttt{gender} and \texttt{age}. We model the dependence using a Logistic model. All
-numerical features are included linearly, while categorical features are expanded into
-dummy variables. Figures below illustrate the model predictions over the lifetime. You
-will find one figure and one estimation summary table for each installed programming
-language.
+\section{The G8 reform\label{sec:reform}}
+The G8 reform analyzed in this study affects only one of these tracks, the academic high school (\textit{Gymnasium}), 
+which constitutes the high-ability school track that upon competition leads to the Abitur, the university entrance 
+qualification that is required for admission to the university. Typically, academic high school lasted nine years, 
+implying a total of thirteen years of schooling. Between 2001 and 2008, 13 out of 16 German federal states reduced 
+the length of academic track schooling from nine to eight years reducing overall schooling from 13 to 12 years.
+most of the additional workload usually being concentrated between grades seven to nine thus students are especially 
+exposed to a higher workload between ages 13 and 16 (see for example \citep{dahmann2014impact, dahmann2018cross}).
 
 
+\section{Data\label{sec:data}}
+Analysis is based on a sample of same-aged students taken from the German Socio-Economic Panel (SOEP) study, a 
+representative household panel survey.\footnote{Use data from the SOEP, data for years 1984-2020, version 37,
+SOEP, 2021.}Adolescents, who respond to the SOEP youth questionnaire in the year they turn seventeen, answer survey 
+questions relating to trust preferences in every wave starting in 2006. Hence, restricted to the data from 2006 through 2018, 
+\footnote{Exclude data of recent immigrants and refugee samples.Also exclude data from 2019 and 2020 since some 
+states swished back to the G9 scheme} and select all adolescents who were attending academic high school (\textit{Gymnasium}) 
+at the time of the survey or had earned a high school diploma.\par To identify whether a student is subject to higher school intensity, 
+used the information on the federal state of residence and the year of high-school entry. In case information on the latter is not provided, 
+the year of high-school entry is imputed from the date of birth. Exclude students from Rhineland-Palatine where the reform has not been implemented 
+state-wide, and students from Hesse who entered academic high school in 2004 and 2005 when schools operated under both schemes (G8 and G9). Individuals who
+repeated one or more grades is also excluded to avoid noise from different levels of schooling experienced.\par \textbf{Trust.} Standard trust 
+questions were included using three statements about whether “people can be generally trusted,” whether “nowadays one can’t rely on anyone,” 
+and whether “if dealing with strangers, it is better to be careful before trusting them.” Answers were given on a seven-point Likert scale ranging 
+from “agree completely” to “totally disagree.” collapsed multiple measures of trust into one index and standardized it so that, by construction, trust 
+has a mean zero and a standard deviation of one.  
+
+\section{Empirical strategy\label{sec:strategy}}
+
+In order to estimate a causal effect of schooling intensity on trust, we exploit the aforementioned G8 reform, in particular,  we exploit the fact that 
+the reform was implemented at different points in time across federal states. We apply a difference-in-differences strategy of the following form   
+\begin{equation}
+   y_{ist}= \gamma_{s} + \tau_{t} + \alpha G8_{st} + \beta X_{ist} +  \epsilon_{ist}
+   \label{eqn:main_eqn}
+\end{equation}
+where $y_{ist}$ is the degree of trust at age 17 of student $i$ living in state $s$ who has entered high school at time $t$. $G8_{st}$ is a binary variable 
+that identifies whether the student was affected by the G8 reform. Control group are students who entered academic high school before the reform yeras and graduate 
+after nine years of high school, i.e., facing a lower schooling intensity. In contrast, our treatment group comprises students who entered academic high school 
+after the reform and graduate after only eight years of academic high school, i.e., facing a higher schooling intensity. $\alpha$ is the coefficient of core interest 
+and provides the reform's effect on student's trust. $\gamma_{s}$ is a set of state fixed effects that captures general differences between states, like time constant 
+differences in state's education systems. A set of time fixed effects ($\tau_{t}$) capture general differences between cohorts over time as well as student trust shocks 
+common to all federal states, e.g.resulting from policy changes applying to all federal states.\par The set of individual control variables $X_{ist}$ contains gender, 
+childhood environment, previous educational performance, parental education dummy (at least one parent has an academic high school degree or higher), father's occupational status 
+dummy (blue-collar occupation), the employment status of the mother and a dummy for being raised by a single parent, religion dummy.  Finally $\epsilon_{ist}$ is the error term. 
+As the error term is likely to be correlated within states, following the recommendation of \citep{bertrand2004much} and cluster the standard errors at the level 
+of the policy change.
+
+\section{Results\label{sec:results}}
+\subsection{Graphical evidence}
+Figure\ref{fig:event_study} in the appendix depicts a graphical illustration of the reform's effect on trust. As the reform was implemented at different points of time, 
+the estimated event study-style specifications with saturated leads and lags. I have used four lags periods and seven leads. Although the graph doesnot totally provide 
+the validity of event study, I sticked to this for the purpose of theis project. What can be noticed is the positive effct of trust post reform which also matches the 
+result of main regression table. 
 
 \begin{figure}[H]
-
     \centering
-    \includegraphics[width=0.85\textwidth]{../python/figures/smoking_by_marital_status}
-
-    \caption{\emph{Python:} Model predictions of the smoking probability over the
-        lifetime. Each colored line represents a case where marital status is fixed to one
-        of the values present in the data set.}
-    \label{fig:python-predictions}
-
+    \includegraphics[width=0.85\textwidth]{../bld/python/figures/event_study_gym}
+     \caption{Event Study plot with leads and lags}\label{fig:event_study}
 \end{figure}
 
+\subsection{Main results}
+Table\ref{tab:main_reg} presents the estimates of equation (\ref{eqn:main_eqn}). Using the controls as shown in the table I get highly significant result. The controls is 
+similar to the paper by \citep{dohmen2008representative}. Although the study was not related to G8 reform Yet it showed women have more trust as contrary to the result present
+here. The negative effect for females on the other side could be because of the differential impact the reform had for boys and girls, with the latter often experiencing a 
+decline in school performance \citep{dahmann2017does}. Significant effects for students with higher educated parents and those with a working-class father. While the former 
+in general exhibit a substantially higher degree of trust, the latter trust less what could be related to less support these children receive at home to cope with the increased 
+pressure at school as proposed by \citet{dahmann2014impact}. Overall, it can be seen that the reform had an important and significantly sizeable effect on student's self rated trust. 
 
-\begin{table}[!h]
-    \input{../python/tables/estimation_results.tex}
-    \caption{\label{tab:python-summary}\emph{Python:} Estimation results of the
-        linear Logistic regression.}
-\end{table}
+\subsection{Mechanisms}
+In this project I tries to look into the mechanisms which might cause the increse in trust.Tables\ref{tab:mech_sport_active},\ref{tab:mech_vw} shows the results. Although no significant 
+results were found may be beacuse of the lower sample size. Althogh postive it shows low impact for treated. There are researches which have shown low impact of the leisure time activites 
+of children due incresed pressure. There are many other mechanisms which can be explored like the "Bive-five" as a mechanism design which I am yet to explore. Or any other in-school programes
+but the data set used does not contain such information. 
+
+\subsection{Robust Check}
+Since trust was measured in the likert scale, here I used the ordered logit model to check the robustness of the main regression model, it can be expected to receive better or similar result.
+Table\ref{tab:robustness} shows the trust is still significant which hints to the fact the main regression is robust to model slection. There is possibility to also check the palcebo by 
+looking at the trust attitude of the non-gymnasium students which is yet to be explored.  
+
+\section{Conclusion\label{sec:conclusion}}
+Drawing on data from the SOEP and using a difference-in-differences design,it is hown that the reform led to a
+significant increase in self rated trust of almost 0.15 of a standard deviation with significant differential
+effects emerging for students with less educated parents or those being considered as low-performing.
+Investigate some potential mechanisms, including changes in time allocation and school-related
+changes and it appears to be the case that our result was driven by school-related characteristics which
+could not be entirely captured with our data. In addtition extending gratitude to\citep{GaudeckerEconProjectTemplates}
+for the project template making the work easier. 
 
 
 
 
-% section introduction (end)
+
+
 
 
 
 \setstretch{1}
+%\nocite{*}
 \printbibliography
 \setstretch{1.5}
+
+
+
+\section{Appendix\label{sec:appendix}}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{../bld/python/figures/descriptive_stats.png}
+     \caption{Descriptive statistics by treatment status}\label{fig:descriptive_stats}
+\end{figure}
+
+%\begin{table}[!h]
+\begin{table}[H]
+    \input{../bld/python/tables/main_regression.tex}
+    \caption{\label{tab:main_reg}\emph{Python:} Estimation results of the
+        main two way fixed effect regression.}
+\end{table}
+
+\begin{table}[H]
+    \input{../bld/python/tables/mechanism_volunteer_work.tex}
+    \caption{\label{tab:mech_vw}\emph{Python:} Mechanism- Volunteer work (outside school)}
+\end{table}
+
+\begin{table}[H]
+    \input{../bld/python/tables/mechanism_sport_active.tex}
+    \caption{\label{tab:mech_sport_active}\emph{Python:} Mechanism- School sport(inside school)}
+\end{table}
+
+\begin{table}[H]
+    \input{../bld/python/tables/placebo_regression.tex}
+    \caption{\label{tab:robustness}\emph{Python:} Robustcheck}
+\end{table}
+
+% \setstretch{1}
+% %\nocite{*}
+% \printbibliography
+% \setstretch{1.5}
+
+\end{document}
+
+
+% section introduction (end)
+
+% \clearpage
+% \begin{singlespace}
+% %\bibliographystyle{plainnat}
+% %\bibliographystyle{chicago}
+% \bibliographystyle{aer}
+% \bibliography{../../paper/refs.bib}
+% \end{singlespace}
+
+% \setstretch{1}
+% \printbibliography{}
+% \setstretch{1.5}
+
 
 
 % \appendix
@@ -135,4 +310,4 @@ language.
 % \counterwithin{table}{section}
 % \counterwithin{figure}{section}
 
-\end{document}
+

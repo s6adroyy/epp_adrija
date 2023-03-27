@@ -1,48 +1,13 @@
 """Functions for fitting the regression model."""
 import pandas as pd
+import numpy as np
 import statsmodels.formula.api as smf
 import pickle
 from epp_adrija.utilities import read_yaml
 from statsmodels.iolib.smpickle import load_pickle
-
-'''
-def fit_logit_model(data, data_info, model_type):
-    """Fit a logit model to data.
-
-    Args:
-        data (pandas.DataFrame): The data set.
-        data_info (dict): Information on data set stored in data_info.yaml. The
-            following keys can be accessed:
-            - 'outcome': Name of dependent variable column in data
-            - 'outcome_numerical': Name to be given to the numerical version of outcome
-            - 'columns_to_drop': Names of columns that are dropped in data cleaning step
-            - 'categorical_columns': Names of columns that are converted to categorical
-            - 'column_rename_mapping': Old and new names of columns to be renamend,
-                stored in a dictionary with design: {'old_name': 'new_name'}
-            - 'url': URL to data set
-        model_type (str): What model to build for the linear relationship of the logit
-            model. Currently implemented:
-            - 'linear': Numerical covariates enter the regression linearly, and
-            categorical covariates are expanded to dummy variables.
-
-    Returns:
-        statsmodels.base.model.Results: The fitted model.
-
-    """
-    outcome_name = data_info["outcome"]
-    outcome_name_numerical = data_info["outcome_numerical"]
-    feature_names = list(set(data.columns) - {outcome_name, outcome_name_numerical})
-
-    if model_type == "linear":
-        # smf.logit expects the binary outcome to be numerical
-        formula = f"{outcome_name_numerical} ~ " + " + ".join(feature_names)
-    else:
-        message = "Only 'linear' model_type is supported right now."
-        raise ValueError(message)
-
-    return smf.logit(formula, data=data).fit()
-
-'''
+from sklearn.linear_model import LogisticRegression
+import statsmodels.api as sm
+from statsmodels.miscmodels.ordinal_model import OrderedModel
 
 
 def load_model(path):
@@ -56,20 +21,17 @@ def load_model(path):
 
     """
     return load_pickle(path)
-    # return load_model(path)
+  
 
 
-# def run_dd_regression(data, treatment_var, data_info, outcome_var, covariates, clustering_var):
 def run_dd_regression(data, outcome_var, covariates):
     """Runs a difference-in-differences regression on the given data using the specified variables and clustering variable.
 
     Parameters:
         data (pandas.DataFrame): The data to use for the regression analysis.
-        treatment_var (str): The name of the treatment variable.
         outcome_var (str): The name of the outcome variable.
         covariates (list): A list of covariate variable names to include in the regression.
-        clustering_var (str): The name of the variable to use for clustering standard errors.
-
+        
     Returns:
         statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
 
@@ -86,8 +48,27 @@ def run_dd_regression(data, outcome_var, covariates):
 
     return reg
 
+def placebo_regression (data, outcome_var, covariates):
+    """Runs a difference-in-differences regression on the given data using the specified variables and clustering variable.
 
-def mechanism_regression(data, outcome_vars, covariates):
+    Parameters:
+        data (pandas.DataFrame): The data to use for the regression analysis.
+        outcome_var (str): The name of the outcome variable.
+        covariates (list): A list of covariate variable names to include in the regression.
+        
+
+    Returns:
+        statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
+
+    """
+    mod_log = OrderedModel(data[outcome_var],
+                        data[covariates],
+                        distr='logit')
+
+    res_log = mod_log.fit(method='bfgs', disp=False)
+    return res_log 
+
+def mechanism_regression(data, outcome_vars, covariates, alpha):
     """Runs a difference-in-differences regression on the given data using the specified variables and clustering variable.
 
     Parameters:
@@ -100,45 +81,28 @@ def mechanism_regression(data, outcome_vars, covariates):
 
     """
     data = data.dropna(subset=covariates)
-    # results = []
-    # for outcome_var in outcome_vars:
     # Create the formula for the regression
-    formula = f"{outcome_vars} ~ {'+'.join(covariates)} + C(year_hgsch_entry)"
+    formula = f"{outcome_vars} ~ {'+'.join(covariates)}"
 
     # Run the regression using statsmodels
-    reg = smf.ols(formula=formula, data=data).fit(
-        cov_type="cluster",
-        cov_kwds={"groups": data["State"]},
-    )
+    reg = smf.ols(formula=formula, data=data).fit(cov_type="cluster", cov_kwds={"groups": data["State"]})
 
-    # results[outcome_var] = reg
-    # results.append(reg)
+    #Check for singularity and regularize if necessary
+    if reg.condition_number < 1e-8:
+        X = data[covariates].values
+        y = data[outcome_vars].values
+        penalty = alpha * np.identity(X.shape[1])
+        X_ridge = np.dot(X.T, X) + penalty
+        X_inv = np.linalg.inv(X_ridge)
+        coef = np.dot(np.dot(X_inv, X.T), y)
+        result = reg.__class__(model=reg.model,
+                                params=coef,
+                                normalized_cov_params=X_inv,
+                                cov_params_default=X_inv,
+                                scale=reg.scale)
+    else:
+        result = reg
 
-    return reg
+    return result
 
 
-# Return the regression results
-data_info = read_yaml(
-    r"C:\Users\LENOVO\epp_adrija\src\epp_adrija\data_management\data_info.yaml",
-)
-data = pd.read_stata(
-    r"C:\Users\LENOVO\epp_adrija\bld\python\data\final_df.dta",
-    convert_categoricals=False,
-)
-abc = run_dd_regression(
-    data,
-    outcome_var="std_trust_var",
-    covariates=[
-        "Treat",
-        "Age",
-        "female",
-        "rural",
-        "East",
-        "low_performing",
-        "highest_educ_hh",
-        "migration_backgrnd",
-        "work_father",
-        "work_mother",
-        "reli_hh",
-    ],
-)

@@ -9,8 +9,10 @@
 .pytask.sqlite3
 .pytask
 
-# bld
-#bld/
+bld
+bld/
+notebooks
+notebooks/
 
 # latex
 *.aux
