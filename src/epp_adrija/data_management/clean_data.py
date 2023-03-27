@@ -14,11 +14,12 @@ def process_data(input_dataframe):
         input_dataframe["jl0233"],
         errors="coerce",
     )
-    # Filter and get rows where syear in 2006 to 2018
+    # Filter and get rows where syear in 2006 to 2018 and restrict the sample 
+     # with no migration background
     input_dataframe = input_dataframe.loc[
         ((input_dataframe["syear"] >= 2006) & (input_dataframe["syear"] <= 2018))
     ].copy()
-
+    
     migration_info = [15, 16, 17, 18, 19]
 
     input_dataframe = input_dataframe.loc[
@@ -39,6 +40,7 @@ def filter_based_on_school(df1):
 
     # Set gymnasium to 1 or 0
     df1["Gymnasium"] = 0
+    # Locked the students in gymnasium(jl0125_v3) and those not in gymnasium presntly but in university 
     df1.loc[
         ((df1["jl0125_v3"] == 3) | ((df1["jl0125_v3"] == 6) & (df1["jl0127_h"] == 4))),
         "Gymnasium",
@@ -49,7 +51,7 @@ def filter_based_on_school(df1):
     df1["year_hgsch_entry"] = df1["bet3year"].fillna(0).values
     df1 = df1.rename(columns={"bula_h": "State"})
 
-    # list of states where the year_hgsch_entry is birth year(gebjahr) + 12 years
+    # list of states (more info in data_info.yaml) where the year_hgsch_entry is birth year(gebjahr) + 12 years
     states_list1 = [11.0, 12.0, 13.0]
     df1.loc[
         (~df1["State"].isin(states_list1))
@@ -66,7 +68,7 @@ def filter_based_on_school(df1):
     ] = (
         df1["gebjahr"] + 12
     )
-    # Remove states where reform has not been implemented state-wide
+    # Remove states where reform has not been implemented state-wide (Rhineland-Palatinate)
     states_list2 = [7.0]
 
     # Exclude students from Hesse who entered high school in 2004 or 2005 when schools operated under both schemes (G8 and G9)
@@ -101,10 +103,11 @@ def create_treatment(df1):
     df1.loc[((df1["State"] == 12) & (df1["year_hgsch_entry"] >= 2006)), "Treat"] = 1
     df1.loc[((df1["State"] == 13) & (df1["year_hgsch_entry"] >= 2002)), "Treat"] = 1
     df1.loc[((df1["State"] == 15) & (df1["year_hgsch_entry"] >= 1999)), "Treat"] = 1
-    # df1['Gymnasium'] = pd.Categorical(df1['Gymnasium']
+    
     return df1
 
-
+# All values below 0 has either not been replied or not is not in the survey year 
+# Any observations having value below 0 has been removed 
 def rename_variables(df1):
     trust_variables = ["jl0361", "jl0362", "jl0363"]
     for var in trust_variables:
@@ -117,17 +120,19 @@ def rename_variables(df1):
         },
         inplace=True,
     )
-
+    # Reverse the scale for "nagetive" items*
     df1["rely_someone"] = df1.apply(lambda _: 0, axis=1)
     df1.loc[(~df1["rely_none"] <= 0), "rely_someone"] = 8 - df1["rely_none"]
     df1["trust_stranger"] = df1.apply(lambda _: 0, axis=1)
     df1.loc[(~df1["distrust_stranger"] <= 0), "trust_stranger"] = (
         8 - df1["distrust_stranger"]
     )
+    # Adding the scores of trust 
     df1["trust_var"] = df1.apply(lambda _: 0, axis=1)
     df1.loc[(~df1["trust"] <= 0), "trust_var"] = (
         df1["trust"] + df1["rely_someone"] + df1["trust_stranger"]
     )
+    # Standardizing the value
     df1["std_trust_var"] = (df1["trust_var"] - df1["trust_var"].mean()) / df1[
         "trust_var"
     ].std()
@@ -135,6 +140,8 @@ def rename_variables(df1):
 
     return df1
 
+# Any observations having value below 0 has been removed 
+# All minor details in data_info.yaml
 
 def rename_independent_var(df2):
     df2["female"] = df2.apply(lambda _: 0, axis=1)
@@ -153,25 +160,30 @@ def rename_independent_var(df2):
 
     df2["low_performing"] = 0
     df2.loc[(~df2["jl0151"] == -1)]
+    # jl0151 = 3 (Gymnasium)
     df2.loc[(df2["jl0151"] == 3), "low_performing"] = 0
+    # Non_gym_school [1= Hauptschule , 2= Realschule, 4= Not recommended]
     Non_gym_school = [1, 2, 4]
     df2.loc[(df2["jl0151"].isin(Non_gym_school)), "low_performing"] = 1
 
     Nan_fsedu = [-5.0, -1.0]
     df2 = df2.loc[~df2["fsedu"].isin(Nan_fsedu)]
     df2 = df2.rename(columns={"fsedu": "father_educ1"})
+    # fsedu = 4 [Abitur]
     df2.loc[~(df2["father_educ1"] == 4.0), "father_educ1"] = 0
     df2.loc[(df2["father_educ1"] == 4.0), "father_educ1"] = 1
 
     Nan_msedu = [-5.0, -1.0]
     df2 = df2.loc[~df2["msedu"].isin(Nan_msedu)]
     df2 = df2.rename(columns={"msedu": "mother_educ1"})
+    # msedu = 4[Abitur]
     df2.loc[~(df2["mother_educ1"] == 4.0), "mother_educ1"] = 0
     df2.loc[(df2["mother_educ1"] == 4.0), "mother_educ1"] = 1
 
     Nan_fprofedu = [-5.0, -1.0]
     df2.loc[~df2["fprofedu"].isin([Nan_fprofedu])]
     df2 = df2.rename(columns={"fprofedu": "father_educ2"})
+    # 32 <fprofedu <28 has all information of ongoing schooling 
     df2.loc[
         ((df2["father_educ2"] < 28.0) | (df2["father_educ2"] > 32.0)),
         "father_educ2",
@@ -184,6 +196,7 @@ def rename_independent_var(df2):
     Nan_mprofedu = [-5.0, -1.0]
     df2.loc[~df2["mprofedu"].isin([Nan_mprofedu])]
     df2 = df2.rename(columns={"mprofedu": "mother_educ2"})
+    # 32 <mprofedu <28 has all information of ongoing schooling 
     df2.loc[
         ((df2["mother_educ2"] < 28.0) | (df2["mother_educ2"] > 32.0)),
         "mother_educ2",
@@ -231,6 +244,7 @@ def rename_independent_var(df2):
 
     df2 = df2.loc[~(df2["mprofstat"] == -1.0)]
     df2 = df2.rename(columns={"mprofstat": "work_mother"})
+    # mprofstat < 10 (no work)  , 15 < mprofstat (still under training/studies)
     df2.loc[
         ~(df2["work_mother"] < 10.0) & (df2["work_mother"] > 15.0),
         "work_mother",
@@ -249,11 +263,13 @@ def rename_independent_var(df2):
     Nan_living1 = [-2.0, -3.0]
     df2 = df2.loc[~df2["living1"].isin(Nan_living1)]
     df2 = df2.rename(columns={"living1": "single_parent"})
+    # living1 = 15 is all years till age 15 
     df2.loc[(df2["single_parent"] < 15.0), "single_parent"] = 1
     df2.loc[(df2["single_parent"] == 15.0), "single_parent"] = 0
 
     df2 = df2.loc[~(df2["jl0176_h"] == -1)]
     df2 = df2.rename(columns={"jl0176_h": "migration_classmate"})
+    # jl0176_h < 6 students having migrataed classmates 
     df2.loc[(df2["migration_classmate"] < 6), "migration_classmate"] = 1
     df2.loc[(df2["migration_classmate"] == 6), "migration_classmate"] = 0
 
@@ -277,9 +293,36 @@ def mechanism(df3):
         (df3["mental_health"] >= 4) & (df3["mental_health"] <= 5), "mental_health"
     ] = 0
 
-    df3 = df3.loc[~(df3["jl0140"] == -2)]
-    df3 = df3.rename(columns={"jl0140": "school_representative"})
-    df3.loc[(df3["school_representative"] == 1), "school_representative"] = 1
+
+     # Recode values of jl0139 to jl0146
+     # -2 here means not applicable 
+    df3['jl0139'] = df3['jl0139'].replace([-2, 1], [0, 1])
+    df3['jl0140'] = df3['jl0140'].replace([-2, 1], [0, 1])
+    df3['jl0141'] = df3['jl0141'].replace([-2,1], [0, 1])
+    df3['jl0142'] = df3['jl0142'].replace([-2,1], [0, 1])
+    df3['jl0143'] = df3['jl0143'].replace([-2,1], [0, 1])
+    df3['jl0144'] = df3['jl0144'].replace([-2,1], [0, 1])
+    df3['jl0145'] = df3['jl0145'].replace([-2, 1], [0, 1])
+    df3 = df3.loc[~(df3["jl0146"] == -1.0)]
+    df3['jl0146'] = df3['jl0146'].replace([-2, 1], [0, 1])
+
+    # Rename variables
+    df3 = df3.rename(columns={'jl0139': 'class_rprsttv',
+                            'jl0140': 'student_rprsttv',
+                            'jl0141': 'school_magazine',
+                            'jl0142': 'drama_dance_group',
+                            'jl0143': 'choir_orchestra',
+                            'jl0144': 'sport_group',
+                            'jl0145': 'other_school_group',
+                            'jl0146': 'none_school_activity'})
+    
+    df3["some_school_group"] = df3.apply(lambda _: 0, axis=1)
+    school_group = ["class_rprsttv", "student_rprsttv", "school_magazine",
+                    "drama_dance_group", "choir_orchestra", "sport_group",
+                    "other_school_group"]
+    # Replacing the vales of the some_school_group == 1 iff they are enagaged in any school group
+    for var in school_group:
+        df3.loc[~(df3[var] == 1), "some_school_group"] = 1
 
     # Nan_jl0105_h = [-1.0]
     df3 = df3.loc[~(df3["jl0105_h"] == -1.0)]
@@ -314,6 +357,7 @@ def event_study(df3):
         df3.loc[(df3["State"].isin([states])), "treat_year"] = treat_year_dict[states]
     df3["t"] = df3["year_hgsch_entry"] - df3["treat_year"]
     df3["lag0"] = df3["t"] == 0
+    # Creating leads and lags depending on t ( negative values lags and postive values leads)
     for i in range(1, 8):
         df3["lag" + str(i)] = df3["t"] == -i
         df3["lead" + str(i)] = df3["t"] == i
@@ -323,203 +367,3 @@ def event_study(df3):
     return df3
 
 
-'''
-def run_dd_regression(data, treatment_var, outcome_var, covariates, clustering_var):
-    """Runs a difference-in-differences regression on the given data using the specified
-    variables and clustering variable.
-
-    Parameters:
-        data (pandas.DataFrame): The data to use for the regression analysis.
-        treatment_var (str): The name of the treatment variable.
-        outcome_var (str): The name of the outcome variable.
-        covariates (list): A list of covariate variable names to include in the regression.
-        clustering_var (str): The name of the variable to use for clustering standard errors.
-
-    Returns:
-        statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
-
-    """
-    # Create the formula for the regression
-    formula = f"{outcome_var} ~ {treatment_var} + {'+'.join(covariates)} + C(year_hgsch_entry)"
-
-    # Run the regression using statsmodels
-    smf.ols(formula=formula, data=data).fit(
-        cov_type="cluster", cov_kwds={"groups": data[clustering_var]},
-    )
-
-    # Return the regression results
-
-
-def event_study(df3):
-    df3["treat_year"] = df3.apply(lambda _: 0, axis=1)
-    treat_year_dict = {
-        "[2] Hamburg": 2002,
-        "[3] Niedersachsen": 2003,
-        "[4] Bremen": 2004,
-        "[5] Nordrhein-Westfalen": 1,
-        "[8] Baden-Wuerttemberg": 2004,
-        "[9] Bayern": 2003,
-        "[10] Saarland": 2001,
-        "[11] Berlin": 2006,
-        "[12] Brandenburg": 2006,
-        "[13] Mecklenburg-Vorpommern": 2002,
-        "[15] Sachsen-Anhalt": 1999,
-    }
-    for states in treat_year_dict:
-        df3.loc[(df3["State"].isin([states])), "treat_year"] = treat_year_dict[states]
-    return df3
-
-
-def lead_lag(df4):
-    df4["t"] = df4["year_hgsch_entry"] - df4["treat_year"]
-    df4["lag0"] = df4["t"] == 0
-    for i in range(1, 8):
-        df4["lag" + str(i)] = df4["t"] == -i
-        df4["lead" + str(i)] = df4["t"] == i
-    return df4
-
-
-def plot_event_study(formula, data):
-    event_study_formula = smf.ols(formula, data=data).fit(
-        cov_type="cluster", cov_kwds={"groups": data["State"]},
-    )
-
-    lags = [
-        "lead7[T.True]",
-        "lead6[T.True]",
-        "lead7[T.True]",
-        "lead4[T.True]",
-        "lead3[T.True]",
-        "lead2[T.True]",
-        "lead1[T.True]",
-    ]
-    leads = [
-        "lag0[T.True]",
-        "lag1[T.True]",
-        "lag2[T.True]",
-        "lag3[T.True]",
-        "lag4[T.True]",
-        "lag5[T.True]",
-        "lag6[T.True]",
-        "lag7[T.True]",
-    ]
-
-    leadslags_plot = pd.DataFrame(
-        {
-            "sd": np.concatenate(
-                [
-                    np.sqrt(
-                        np.diag(event_study_formula.cov_params().loc[leads][leads]),
-                    ),
-                    np.array([0]),
-                    np.sqrt(np.diag(event_study_formula.cov_params().loc[lags][lags])),
-                ],
-            ),
-            "mean": np.concatenate(
-                [
-                    event_study_formula.params[leads],
-                    np.array([0]),
-                    event_study_formula.params[lags],
-                ],
-            ),
-            "label": np.arange(-8, 8),
-        },
-    )
-
-    leadslags_plot["lb"] = leadslags_plot["mean"] - leadslags_plot["sd"] * 1.96
-    leadslags_plot["ub"] = leadslags_plot["mean"] + leadslags_plot["sd"] * 1.96
-
-    plot = (
-        p.ggplot(leadslags_plot, p.aes(x="label", y="mean", ymin="lb", ymax="ub"))
-        + p.geom_hline(yintercept=0.0769, color="red")
-        + p.geom_pointrange()
-        + p.theme_minimal()
-        + p.xlab("Years before and after policy")
-        + p.ylab("Event-Study")
-        + p.geom_hline(yintercept=0, linetype="dashed")
-        + p.geom_vline(xintercept=0, linetype="dashed")
-    )
-    plt.savefig("leadslags_plot.png")
-    return plot.draw()
-
-
-
-
-# "+".join(xvar))
-#     "+".join(xvar_non_gym))
-
-# dd_reg = smf.ols(dd_formula,
-# data = Ind_Rename).fit(cov_type="cluster",cov_kwds={'groups':Ind_Rename['State']})
-# dd_reg_non_gym = smf.ols(dd_formula_non_gym,
-#             data = Ind_Rename_non_gym).fit(cov_type="cluster",cov_kwds={'groups':Ind_Rename_non_gym['State']})
-
-
-
-
-# event_study_formula = smf.ols(formula,
-# data = Ind_Rename).fit(cov_type='cluster', cov_kwds={'groups':Ind_Rename['State']})
-# event_study_formula_non_gym = smf.ols(formula,
-#             data = Ind_Rename_non_gym).fit(cov_type='cluster', cov_kwds={'groups':Ind_Rename_non_gym['State']})
-
-
-#'label': np.arange(-8,8)})
-
-#     'label': np.arange(-8,8)})
-
-
-
-
-# p.ggplot(leadslags_plot_non_gym, p.aes(x = 'label', y = 'mean',
-#     p.geom_hline(yintercept = 0,
-#     p.geom_vline(xintercept = 0,
-#              linetype = "dashed")
-
-# p.ggplot(leadslags_plot, p.aes(x = 'label', y = 'mean',
-# p.geom_hline(yintercept = 0,
-# p.geom_vline(xintercept = 0,
-# linetype = "dashed")
-
-# p.ggplot(leadslags_plot_non_gym, p.aes(x = 'label', y = 'mean',
-#     p.geom_hline(yintercept = 0,
-#     p.geom_vline(xintercept = 0,
-#              linetype = "dashed")
-data = pd.read_stata(r"C:\\input_data\\merge_original_youth_data.dta")
-data.head()
-
-raw_dataframe = data.copy()
-raw_dataframe.set_index("pid", inplace=True)
-
-
-processed_dataframe = process_data(raw_dataframe)
-# processed_dataframe.shape
-
-# for school in ['gymnasium','not_gymnasium']:
-half_done = filter_based_on_school(processed_dataframe)
-Treatment = create_treatment(half_done)
-
-Variable_renamed = rename_variables(Treatment)
-
-Ind_Rename = rename_independent_var(Variable_renamed)
-Doing_event = event_study(Ind_Rename)
-doing_lead_lag = lead_lag(Ind_Rename)
-
-results = run_dd_regression(
-    data=Ind_Rename,
-    treatment_var="Treat",
-    outcome_var="std_trust_var",
-    covariates=[
-        "Age",
-        "female",
-        "rural",
-        "East",
-        "low_performing",
-        "highest_educ_hh",
-        "migration_backgrnd",
-        "father_blue_collar",
-        "m_work",
-        "reli_hh",
-        "single_parent",
-    ],
-    clustering_var="State",
-)
-'''

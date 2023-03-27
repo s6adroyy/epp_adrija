@@ -1,56 +1,42 @@
 \begin{center}
 \begin{tabular}{lclc}
 \toprule
-\textbf{Dep. Variable:}                  &  sport\_active   & \textbf{  R-squared:         } &     0.442   \\
-\textbf{Model:}                          &       OLS        & \textbf{  Adj. R-squared:    } &    -0.314   \\
-\textbf{Method:}                         &  Least Squares   & \textbf{  F-statistic:       } & -1.486e+12  \\
-\textbf{Date:}                           & Wed, 22 Mar 2023 & \textbf{  Prob (F-statistic):} &     1.00    \\
-\textbf{Time:}                           &     18:59:03     & \textbf{  Log-Likelihood:    } &    10.883   \\
-\textbf{No. Observations:}               &          34      & \textbf{  AIC:               } &     18.23   \\
-\textbf{Df Residuals:}                   &          14      & \textbf{  BIC:               } &     48.76   \\
-\textbf{Df Model:}                       &          19      & \textbf{                     } &             \\
-\textbf{Covariance Type:}                &     cluster      & \textbf{                     } &             \\
+\textbf{Dep. Variable:}       &  sport\_active   & \textbf{  R-squared:         } &     0.027   \\
+\textbf{Model:}               &       OLS        & \textbf{  Adj. R-squared:    } &     0.018   \\
+\textbf{Method:}              &  Least Squares   & \textbf{  F-statistic:       } &     34.46   \\
+\textbf{Date:}                & Mon, 27 Mar 2023 & \textbf{  Prob (F-statistic):} &  3.97e-08   \\
+\textbf{Time:}                &     17:05:16     & \textbf{  Log-Likelihood:    } &   -441.99   \\
+\textbf{No. Observations:}    &        1089      & \textbf{  AIC:               } &     906.0   \\
+\textbf{Df Residuals:}        &        1078      & \textbf{  BIC:               } &     960.9   \\
+\textbf{Df Model:}            &          10      & \textbf{                     } &             \\
+\textbf{Covariance Type:}     &     cluster      & \textbf{                     } &             \\
 \bottomrule
 \end{tabular}
 \begin{tabular}{lcccccc}
-                                         & \textbf{coef} & \textbf{std err} & \textbf{z} & \textbf{P$> |$z$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
+                              & \textbf{coef} & \textbf{std err} & \textbf{z} & \textbf{P$> |$z$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
 \midrule
-\textbf{Intercept}                       &       0.0044  &        0.001     &     3.871  &         0.000        &        0.002    &        0.007     \\
-\textbf{C(year\_hgsch\_entry)[T.2001.0]} &       0.2003  &        0.217     &     0.925  &         0.355        &       -0.224    &        0.625     \\
-\textbf{C(year\_hgsch\_entry)[T.2003.0]} &      -0.2394  &        0.269     &    -0.889  &         0.374        &       -0.767    &        0.288     \\
-\textbf{C(year\_hgsch\_entry)[T.2004.0]} &      -0.5000  &          nan     &       nan  &           nan        &          nan    &          nan     \\
-\textbf{C(year\_hgsch\_entry)[T.2005.0]} &      -0.6899  &        0.301     &    -2.288  &         0.022        &       -1.281    &       -0.099     \\
-\textbf{C(year\_hgsch\_entry)[T.2006.0]} &      -0.5456  &        0.090     &    -6.032  &         0.000        &       -0.723    &       -0.368     \\
-\textbf{C(year\_hgsch\_entry)[T.2007.0]} &      -0.5135  &        0.013     &   -38.887  &         0.000        &       -0.539    &       -0.488     \\
-\textbf{C(year\_hgsch\_entry)[T.2008.0]} &      -0.4799  &        0.094     &    -5.112  &         0.000        &       -0.664    &       -0.296     \\
-\textbf{C(year\_hgsch\_entry)[T.2009.0]} &      -0.4607  &        0.161     &    -2.862  &         0.004        &       -0.776    &       -0.145     \\
-\textbf{C(year\_hgsch\_entry)[T.2010.0]} &      -0.5596  &        0.055     &   -10.238  &         0.000        &       -0.667    &       -0.452     \\
-\textbf{C(year\_hgsch\_entry)[T.2011.0]} &      -0.4003  &        0.141     &    -2.840  &         0.005        &       -0.677    &       -0.124     \\
-\textbf{C(year\_hgsch\_entry)[T.2012.0]} &      -0.3989  &        0.211     &    -1.889  &         0.059        &       -0.813    &        0.015     \\
-\textbf{Treat}                           &       0.5000  &          nan     &       nan  &           nan        &          nan    &          nan     \\
-\textbf{Age}                             &       0.0743  &        0.019     &     3.871  &         0.000        &        0.037    &        0.112     \\
-\textbf{female}                          &      -0.0270  &        0.026     &    -1.022  &         0.307        &       -0.079    &        0.025     \\
-\textbf{rural}                           &   -3.068e-16  &     5.82e-17     &    -5.270  &         0.000        &    -4.21e-16    &    -1.93e-16     \\
-\textbf{East}                            &      -0.2606  &        0.269     &    -0.968  &         0.333        &       -0.788    &        0.267     \\
-\textbf{low\_performing}                 &      -0.0062  &        0.017     &    -0.375  &         0.708        &       -0.039    &        0.026     \\
-\textbf{highest\_educ\_hh}               &      -0.0366  &        0.060     &    -0.609  &         0.543        &       -0.154    &        0.081     \\
-\textbf{migration\_backgrnd}             &       0.0044  &        0.001     &     3.871  &         0.000        &        0.002    &        0.007     \\
-\textbf{work\_father}                    &      -0.0304  &        0.074     &    -0.413  &         0.680        &       -0.175    &        0.114     \\
-\textbf{work\_mother}                    &      -0.1465  &        0.224     &    -0.655  &         0.513        &       -0.585    &        0.292     \\
-\textbf{reli\_hh}                        &      -0.0618  &        0.071     &    -0.871  &         0.384        &       -0.201    &        0.077     \\
+\textbf{Intercept}            &       0.8846  &        0.049     &    17.937  &         0.000        &        0.788    &        0.981     \\
+\textbf{Treat}                &       0.0123  &        0.019     &     0.649  &         0.516        &       -0.025    &        0.049     \\
+\textbf{female}               &      -0.0532  &        0.017     &    -3.091  &         0.002        &       -0.087    &       -0.019     \\
+\textbf{East}                 &      -0.0942  &        0.038     &    -2.446  &         0.014        &       -0.170    &       -0.019     \\
+\textbf{low\_performing}      &      -0.0596  &        0.024     &    -2.447  &         0.014        &       -0.107    &       -0.012     \\
+\textbf{highest\_educ\_hh}    &       0.0540  &        0.021     &     2.510  &         0.012        &        0.012    &        0.096     \\
+\textbf{work\_father}         &      -0.0243  &        0.035     &    -0.693  &         0.488        &       -0.093    &        0.044     \\
+\textbf{work\_mother}         &       0.0103  &        0.024     &     0.429  &         0.668        &       -0.037    &        0.057     \\
+\textbf{reli\_hh}             &      -0.0324  &        0.021     &    -1.564  &         0.118        &       -0.073    &        0.008     \\
+\textbf{single\_parent}       &      -0.0002  &        0.027     &    -0.009  &         0.993        &       -0.053    &        0.053     \\
+\textbf{migration\_classmate} &      -0.0176  &        0.022     &    -0.796  &         0.426        &       -0.061    &        0.026     \\
 \bottomrule
 \end{tabular}
 \begin{tabular}{lclc}
-\textbf{Omnibus:}       & 13.441 & \textbf{  Durbin-Watson:     } &    2.043  \\
-\textbf{Prob(Omnibus):} &  0.001 & \textbf{  Jarque-Bera (JB):  } &   24.626  \\
-\textbf{Skew:}          & -0.784 & \textbf{  Prob(JB):          } & 4.49e-06  \\
-\textbf{Kurtosis:}      &  6.863 & \textbf{  Cond. No.          } & 5.28e+18  \\
+\textbf{Omnibus:}       & 317.763 & \textbf{  Durbin-Watson:     } &     1.974  \\
+\textbf{Prob(Omnibus):} &   0.000 & \textbf{  Jarque-Bera (JB):  } &   650.155  \\
+\textbf{Skew:}          &  -1.771 & \textbf{  Prob(JB):          } & 6.62e-142  \\
+\textbf{Kurtosis:}      &   4.337 & \textbf{  Cond. No.          } &      11.5  \\
 \bottomrule
 \end{tabular}
 %\caption{OLS Regression Results}
 \end{center}
 
 Notes: \newline
- [1] Standard Errors are robust to cluster correlation (cluster) \newline
- [2] The smallest eigenvalue is 3.58e-34. This might indicate that there are \newline
- strong multicollinearity problems or that the design matrix is singular.
+ [1] Standard Errors are robust to cluster correlation (cluster)
