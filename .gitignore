@@ -11,6 +11,8 @@
 
 bld
 bld/
+notebooks
+notebooks/
 
 # latex
 *.aux
