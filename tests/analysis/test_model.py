@@ -2,7 +2,6 @@
 
 import numpy as np
 import pandas as pd
-import pytest
 from epp_adrija.analysis.model import run_dd_regression
 
 

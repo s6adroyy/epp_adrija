@@ -6,7 +6,9 @@ from pytask_latex import compilation_steps as cs
 from epp_adrija.config import BLD, PAPER_DIR
 
 documents = ["epp_adrija", "epp_adrija_pres"]
-
+# documents = [
+#     "epp_adrija",
+#     ]
 for document in documents:
 
     @pytask.mark.latex(

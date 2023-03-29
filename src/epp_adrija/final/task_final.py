@@ -6,10 +6,10 @@ from epp_adrija.config import BLD
 from epp_adrija.analysis.model import load_model
 from epp_adrija.final.plot import plot_event_study,descriptive_stats_plot
 #from epp_adrija.analysis.model import mechanism_regression
-import plotnine as p
+#import plotnine as p
 from plotnine import *
-import matplotlib
-from pathlib import Path
+#import matplotlib
+#from pathlib import Path
 
 # from epp_adrija.utilities import read_yaml
 
