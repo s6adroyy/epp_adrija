@@ -1,7 +1,5 @@
 """Functions plotting results."""
 
-import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import plotnine as p

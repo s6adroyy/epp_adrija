@@ -1,12 +1,8 @@
 """Functions for fitting the regression model."""
-import pandas as pd
+
 import numpy as np
 import statsmodels.formula.api as smf
-import pickle
-from epp_adrija.utilities import read_yaml
 from statsmodels.iolib.smpickle import load_pickle
-from sklearn.linear_model import LogisticRegression
-import statsmodels.api as sm
 from statsmodels.miscmodels.ordinal_model import OrderedModel
 
 

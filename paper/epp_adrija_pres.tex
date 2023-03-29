@@ -1,5 +1,5 @@
 \documentclass[11pt, aspectratio=169]{beamer}
-% \documentclass[11pt,handout]{beamer}
+%\documentclass[11pt,handout]{beamer}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp}
@@ -50,11 +50,11 @@
 
 
 \begin{frame}[t]
-    \frametitle{heading here}
+    \frametitle{Contents}
     \begin{itemize}
-        \item<+-> Please cite this template as: \citet{GaudeckerEconProjectTemplates}
-        \item<+-> Example data is taken from \url{https://www.stem.org.uk/resources/elibrary/resource/28452/large-datasets-stats4schools}
-    \end{itemize}
+        \item<+-> This presentation only has the graphs used in the actual paper.
+        \item<+->  Template used- \citet{GaudeckerEconProjectTemplates}
+    \end{itemize}   
     \note{~}
 \end{frame}
 
@@ -64,18 +64,25 @@
     \begin{figure}[H]
 
         \centering
-        \includegraphics[width=0.5\textwidth]{../python/figures/smoking_by_marital_status}
+        \includegraphics[width=0.5\textwidth]{../bld/python/figures/descriptive_stats}
 
-        \caption{\emph{Python:} Model predictions of the smoking probability over the
-            lifetime. Each colored line represents a case where marital status is fixed to
-            one of the values present in the data set.}
-        \label{fig:python-predictions}
+        \caption{\emph{Python:} Descriptive statistics by treatment status}
+        \label{fig:descriptive_stats_pres}
 
     \end{figure}
 \end{frame}
 
+\begin{frame}[t]
+    \begin{figure}[H]
 
+        \centering
+        \includegraphics[width=0.5\textwidth]{../bld/python/figures/event_study_gym}
 
+        \caption{\emph{Python:} Event study graph with 4 lags and 7 leads}
+        \label{fig:event_study_pres}
+
+    \end{figure}
+\end{frame}
 
 
 
