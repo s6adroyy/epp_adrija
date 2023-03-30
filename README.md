@@ -1,10 +1,16 @@
 # Effective Programming Practices for Economists Final Project 
 
+This project aims to look at the trust attitude of 17 year old children who has been 
+treated under German G8 educational reform. Merged five data sets. Click to get the 
+information of the datasets [ppathl](https://www.diw.de/documents/publikationen/73/diw_01.c.745961.de/diw_ssp0835.pdf), [hbrutto](https://www.diw.de/documents/publikationen/73/diw_01.c.850363.de/diw_ssp1180.pdf), [bioedu](https://paneldata.org/soep-core/datasets/bioedu/),[bioparen](https://www.diw.de/documents/publikationen/73/diw_01.c.850342.de/diw_ssp1177.pdf),
+and [jugendl](https://paneldata.org/soep-core/datasets/jugendl/). 
+
 ## Usage
 
 To get started 
-$ conda env create -f environment.yml
-$ conda activate epp_adrija
+
+  $ conda env create -f environment.yml
+  $ conda activate epp_adrija
 
 This repo has all the folders including the tests and the task files for plotting, analysis and data cleaning.
 
@@ -33,7 +39,9 @@ Run the test file using
 $ pytest
 ```
 
-Run task files using $ pytask Run specific task files using $ pytask -m wip
+Run task files using 
+
+  $ pytask 
 
 #### Other changes include:
 
