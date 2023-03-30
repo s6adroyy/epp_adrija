@@ -23,6 +23,6 @@ notebooks/
 *.fls
 *.log
 *.out
-#*.pdf
+*.pdf
 *.run.xml
 *.synctex.gz
