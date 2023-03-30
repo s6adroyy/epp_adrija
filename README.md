@@ -9,8 +9,12 @@ and [jugendl](https://paneldata.org/soep-core/datasets/jugendl/).
 
 To get started 
 
-  $ conda env create -f environment.yml
-  $ conda activate epp_adrija
+```
+$ conda/mamba env create --file=environment.yml
+```
+```
+$ conda activate epp_adrija
+```
 
 This repo has all the folders including the tests and the task files for plotting, analysis and data cleaning.
 
@@ -41,7 +45,9 @@ $ pytest
 
 Run task files using 
 
-  $ pytask 
+```
+$ pytask 
+```
 
 #### Other changes include:
 
@@ -49,4 +55,5 @@ Run task files using
 
 ## Acknowledgment
 
-We would like to express our deep gratitude to Professor Hans-Martin von Gaudecker, Janos Gabler and Gregor Boehl for their support and guidance.
+We would like to express our deep gratitude to Professor Hans-Martin von Gaudecker for
+[Templates for Reproducible Research Projects in Economics](https://doi.org/10.5281/zenodo.2533241), Janos Gabler and Gregor Boehl for their support and guidance.
