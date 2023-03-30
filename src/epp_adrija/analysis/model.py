@@ -32,7 +32,6 @@ def run_dd_regression(data, outcome_var, covariates):
         statsmodels.regression.linear_model.RegressionResultsWrapper: A summary of the regression results.
 
     """
-    # data = data.dropna(subset=covariates)
     # Create the formula for the regression
     formula = f"{outcome_var} ~  {'+'.join(covariates)} + C(year_hgsch_entry)"
 
@@ -71,7 +70,7 @@ def mechanism_regression(data, outcome_vars, covariates, alpha):
         data (pandas.DataFrame): The data to use for the regression analysis.
         outcome_vars (list): A list of outcome variable names to include in the regression.
         covariates (list): A list of covariate variable names to include in the regression.
-
+        alpha (numeric): A value for the penalty benchmark
     Returns:
         dict: A dictionary of regression results, with the outcome variable names as keys and the regression results as values.
 
